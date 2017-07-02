@@ -1,0 +1,1696 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Final Project   -  Part B"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## We decided to add more data to our model bacause we saw that our data is too similar based on our models results (and with sigal's adivce)\n",
+    "\n",
+    "# We switched the 'text' title and the 'type' title in mistake so at the code it seems to be the opposite"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Get recipes from allrecipes site"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 251,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "%matplotlib inline\n",
+    "import matplotlib.pyplot as plt\n",
+    "from matplotlib.pyplot import rcParams"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "import requests\n",
+    "from bs4 import BeautifulSoup\n",
+    "import json\n",
+    "\n",
+    "def fix (so):\n",
+    "    return \"http://allrecipes.com/\"+so.get('href')\n",
+    "\n",
+    "r = requests.get(\"http://allrecipes.com/recipes/1254/desserts/fruit-desserts/apple-desserts/?internalSource=recipe%20breadcrumb&referringId=8358&referringContentType=recipe&referringPosition=5&clickId=recipe%20breadcrumb%205&page=2\")\n",
+    "soup = BeautifulSoup(r.text, \"lxml\")\n",
+    "g=soup.find(\"section\", class_=\"grid salvattore-grid grid-fixed\").find_all(\"a\")\n",
+    "\n",
+    "recipe_links = map(fix,g)[0:150]\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 64,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['http://allrecipes.com//recipe/15800/apple-betty/',\n",
+       " 'http://allrecipes.com//recipe/232922/apple-cinnamon-white-cake/',\n",
+       " 'http://allrecipes.com//recipe/46395/applesauce-bars/',\n",
+       " 'http://allrecipes.com//recipe/12681/apple-pie-filling/',\n",
+       " 'http://allrecipes.com//recipe/68348/apple-brownies/',\n",
+       " 'http://allrecipes.com//recipe/57582/sour-cream-apple-pie-deluxe/',\n",
+       " 'http://allrecipes.com//recipe/25552/apple-banana-cupcakes/',\n",
+       " 'http://allrecipes.com//recipe/15908/caramel-apple-pie-ii/',\n",
+       " 'http://allrecipes.com//recipe/8358/apple-cake-iv/',\n",
+       " 'http://allrecipes.com//recipe/177053/slow-cooker-apple-crisp/',\n",
+       " 'http://allrecipes.com//recipe/14148/orange-cream-fruit-salad/',\n",
+       " 'http://allrecipes.com//recipe/16853/maple-apple-crisp/',\n",
+       " 'http://allrecipes.com//recipe/229088/apple-crisp-with-oat-topping/',\n",
+       " 'http://allrecipes.com//recipe/24069/nanas-apple-crisp/',\n",
+       " 'http://allrecipes.com//recipe/46232/old-fashioned-apple-dumplings/',\n",
+       " 'http://allrecipes.com//recipe/9768/glazed-apple-cookies/',\n",
+       " 'http://allrecipes.com//recipe/8454/apple-cake-v/',\n",
+       " 'http://allrecipes.com//recipe/22338/apple-crisp-ii/',\n",
+       " 'http://allrecipes.com//recipe/7620/apple-bundt-cake/',\n",
+       " 'http://allrecipes.com//recipe/15138/apple-pecan-cobbler/']"
+      ]
+     },
+     "execution_count": 64,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from recipe_scrapers import scrap_me\n",
+    "from collections import Counter\n",
+    "# recipe_links\n",
+    "r1 = [k for k,v in Counter(recipe_links).items() if v>1]\n",
+    "r1\n",
+    "# len(recipe_links)\n",
+    "# for link in recipe_links:\n",
+    "#       print(link)\n",
+    "#     scrap_me = scrap_me(link)\n",
+    "#     scrap_me.instructions()\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 52,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "def fix (so):\n",
+    "    return \"http://allrecipes.com/\"+so.get('href')\n",
+    "\n",
+    "r = requests.get(\"http://allrecipes.com/recipes/17527/desserts/fruit-desserts/banana-desserts/?internalSource=hub%20nav&referringId=17140&referringContentType=recipe%20hub&linkName=hub%20nav%20daughter&clickId=hub%20nav%202&page=2\")\n",
+    "soup = BeautifulSoup(r.text, \"lxml\")\n",
+    "g=soup.find(\"section\", class_=\"grid salvattore-grid grid-fixed\").find_all(\"a\")\n",
+    "\n",
+    "recipe_links1 = map(fix,g)[0:150]\n",
+    "\n",
+    "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 65,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['http://allrecipes.com//recipe/15002/banana-oatmeal-cookies-i/',\n",
+       " 'http://allrecipes.com//recipe/21310/aunt-bettys-banana-pudding/',\n",
+       " 'http://allrecipes.com//recipe/25789/banana-bars/',\n",
+       " 'http://allrecipes.com//recipe/20038/campfire-banana-splits/',\n",
+       " 'http://allrecipes.com//recipe/20256/banana-chocolate-chip-dessert/',\n",
+       " 'http://allrecipes.com//recipe/8445/english-trifle/',\n",
+       " 'http://allrecipes.com//recipe/8258/banana-cake-v/',\n",
+       " 'http://allrecipes.com//recipe/12625/banoffee/',\n",
+       " 'http://allrecipes.com//recipe/7899/banana-oatmeal-crumb-cake/',\n",
+       " 'http://allrecipes.com//recipe/17983/banana-oatmeal-cookies-ii/',\n",
+       " 'http://allrecipes.com//recipe/77309/creamy-banana-pudding/',\n",
+       " 'http://allrecipes.com//recipe/11386/banana-bread-cookies/',\n",
+       " 'http://allrecipes.com//recipe/18990/banana-pudding-i/',\n",
+       " 'http://allrecipes.com//recipe/25587/gramma-berthas-banana-cake/',\n",
+       " 'http://allrecipes.com//recipe/8301/banana-loaf-cake-i/',\n",
+       " 'http://allrecipes.com//recipe/24943/chocolate-banana-bread-pudding/',\n",
+       " 'http://allrecipes.com//recipe/16875/homemade-banana-pudding-pie/',\n",
+       " 'http://allrecipes.com//recipe/188361/cocoa-banana-bars/',\n",
+       " 'http://allrecipes.com//recipe/21313/banana-pudding-iii/',\n",
+       " 'http://allrecipes.com//recipe/25559/banana-cake-x/']"
+      ]
+     },
+     "execution_count": 65,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "r2 = [k for k,v in Counter(recipe_links1).items() if v>1]\n",
+    "r2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 60,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['http://allrecipes.com//recipe/27478/white-chocolate-blueberry-cheesecake/',\n",
+       " 'http://allrecipes.com//recipe/9651/blueberry-bars/',\n",
+       " 'http://allrecipes.com//recipe/72747/blueberry-lemon-pound-cake/',\n",
+       " 'http://allrecipes.com//recipe/65071/blueberry-ricotta-squares/',\n",
+       " 'http://allrecipes.com//recipe/74029/nova-scotia-blueberry-cream-cake/',\n",
+       " 'http://allrecipes.com//recipe/237063/chef-johns-blueberry-clafoutis/',\n",
+       " 'http://allrecipes.com//recipe/64787/cherry-blueberry-pie/',\n",
+       " 'http://allrecipes.com//recipe/22194/blueberry-coffee-cake-ii/',\n",
+       " 'http://allrecipes.com//recipe/38686/blueberry-crisp-i/',\n",
+       " 'http://allrecipes.com//recipe/9652/blueberry-drop-cookies/',\n",
+       " 'http://allrecipes.com//recipe/7934/blueberry-cheesecake/',\n",
+       " 'http://allrecipes.com//recipe/12341/blueberry-cherry-pie/',\n",
+       " 'http://allrecipes.com//recipe/12657/topless-blueberry-pie/',\n",
+       " 'http://allrecipes.com//recipe/228532/blueberry-shortbread-bars/',\n",
+       " 'http://allrecipes.com//recipe/77297/blueberry-streusel-cobbler/',\n",
+       " 'http://allrecipes.com//recipe/12395/fresh-blueberry-pie-ii/',\n",
+       " 'http://allrecipes.com//recipe/223253/easy-blueberry-cobbler/',\n",
+       " 'http://allrecipes.com//recipe/74837/sugar-free-blueberry-coffee-cake/',\n",
+       " 'http://allrecipes.com//cook/foodwisheswithchefjohn/',\n",
+       " 'http://allrecipes.com//recipe/60012/blueberry-gingerbread/',\n",
+       " 'http://allrecipes.com//recipe/223399/best-blueberry-buckle/']"
+      ]
+     },
+     "execution_count": 60,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "def fix (so):\n",
+    "    return \"http://allrecipes.com/\"+so.get('href')\n",
+    "\n",
+    "r = requests.get(\"http://allrecipes.com/recipes/17532/desserts/fruit-desserts/blueberry-desserts/?internalSource=hub%20nav&referringId=17140&referringContentType=recipe%20hub&linkName=hub%20nav%20daughter&clickId=hub%20nav%202&page=2\")\n",
+    "soup = BeautifulSoup(r.text, \"lxml\")\n",
+    "g=soup.find(\"section\", class_=\"grid salvattore-grid grid-fixed\").find_all(\"a\")\n",
+    "\n",
+    "recipe_links2 = map(fix,g)[0:150]\n",
+    "r3 = [k for k,v in Counter(recipe_links2).items() if v>1]\n",
+    "r3\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 93,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['http://allrecipes.com//recipe/15800/apple-betty/',\n",
+       " 'http://allrecipes.com//recipe/232922/apple-cinnamon-white-cake/',\n",
+       " 'http://allrecipes.com//recipe/46395/applesauce-bars/',\n",
+       " 'http://allrecipes.com//recipe/12681/apple-pie-filling/',\n",
+       " 'http://allrecipes.com//recipe/68348/apple-brownies/',\n",
+       " 'http://allrecipes.com//recipe/57582/sour-cream-apple-pie-deluxe/',\n",
+       " 'http://allrecipes.com//recipe/25552/apple-banana-cupcakes/',\n",
+       " 'http://allrecipes.com//recipe/15908/caramel-apple-pie-ii/',\n",
+       " 'http://allrecipes.com//recipe/8358/apple-cake-iv/',\n",
+       " 'http://allrecipes.com//recipe/177053/slow-cooker-apple-crisp/',\n",
+       " 'http://allrecipes.com//recipe/14148/orange-cream-fruit-salad/',\n",
+       " 'http://allrecipes.com//recipe/16853/maple-apple-crisp/',\n",
+       " 'http://allrecipes.com//recipe/229088/apple-crisp-with-oat-topping/',\n",
+       " 'http://allrecipes.com//recipe/24069/nanas-apple-crisp/',\n",
+       " 'http://allrecipes.com//recipe/46232/old-fashioned-apple-dumplings/',\n",
+       " 'http://allrecipes.com//recipe/9768/glazed-apple-cookies/',\n",
+       " 'http://allrecipes.com//recipe/8454/apple-cake-v/',\n",
+       " 'http://allrecipes.com//recipe/22338/apple-crisp-ii/',\n",
+       " 'http://allrecipes.com//recipe/7620/apple-bundt-cake/',\n",
+       " 'http://allrecipes.com//recipe/15138/apple-pecan-cobbler/',\n",
+       " 'http://allrecipes.com//recipe/15002/banana-oatmeal-cookies-i/',\n",
+       " 'http://allrecipes.com//recipe/21310/aunt-bettys-banana-pudding/',\n",
+       " 'http://allrecipes.com//recipe/25789/banana-bars/',\n",
+       " 'http://allrecipes.com//recipe/20038/campfire-banana-splits/',\n",
+       " 'http://allrecipes.com//recipe/20256/banana-chocolate-chip-dessert/',\n",
+       " 'http://allrecipes.com//recipe/8445/english-trifle/',\n",
+       " 'http://allrecipes.com//recipe/8258/banana-cake-v/',\n",
+       " 'http://allrecipes.com//recipe/12625/banoffee/',\n",
+       " 'http://allrecipes.com//recipe/7899/banana-oatmeal-crumb-cake/',\n",
+       " 'http://allrecipes.com//recipe/17983/banana-oatmeal-cookies-ii/',\n",
+       " 'http://allrecipes.com//recipe/77309/creamy-banana-pudding/',\n",
+       " 'http://allrecipes.com//recipe/11386/banana-bread-cookies/',\n",
+       " 'http://allrecipes.com//recipe/18990/banana-pudding-i/',\n",
+       " 'http://allrecipes.com//recipe/25587/gramma-berthas-banana-cake/',\n",
+       " 'http://allrecipes.com//recipe/8301/banana-loaf-cake-i/',\n",
+       " 'http://allrecipes.com//recipe/24943/chocolate-banana-bread-pudding/',\n",
+       " 'http://allrecipes.com//recipe/16875/homemade-banana-pudding-pie/',\n",
+       " 'http://allrecipes.com//recipe/188361/cocoa-banana-bars/',\n",
+       " 'http://allrecipes.com//recipe/21313/banana-pudding-iii/',\n",
+       " 'http://allrecipes.com//recipe/25559/banana-cake-x/',\n",
+       " 'http://allrecipes.com//recipe/27478/white-chocolate-blueberry-cheesecake/',\n",
+       " 'http://allrecipes.com//recipe/9651/blueberry-bars/',\n",
+       " 'http://allrecipes.com//recipe/72747/blueberry-lemon-pound-cake/',\n",
+       " 'http://allrecipes.com//recipe/65071/blueberry-ricotta-squares/',\n",
+       " 'http://allrecipes.com//recipe/74029/nova-scotia-blueberry-cream-cake/',\n",
+       " 'http://allrecipes.com//recipe/237063/chef-johns-blueberry-clafoutis/',\n",
+       " 'http://allrecipes.com//recipe/64787/cherry-blueberry-pie/',\n",
+       " 'http://allrecipes.com//recipe/22194/blueberry-coffee-cake-ii/',\n",
+       " 'http://allrecipes.com//recipe/38686/blueberry-crisp-i/',\n",
+       " 'http://allrecipes.com//recipe/9652/blueberry-drop-cookies/',\n",
+       " 'http://allrecipes.com//recipe/7934/blueberry-cheesecake/',\n",
+       " 'http://allrecipes.com//recipe/12341/blueberry-cherry-pie/',\n",
+       " 'http://allrecipes.com//recipe/12657/topless-blueberry-pie/',\n",
+       " 'http://allrecipes.com//recipe/228532/blueberry-shortbread-bars/',\n",
+       " 'http://allrecipes.com//recipe/77297/blueberry-streusel-cobbler/',\n",
+       " 'http://allrecipes.com//recipe/12395/fresh-blueberry-pie-ii/',\n",
+       " 'http://allrecipes.com//recipe/223253/easy-blueberry-cobbler/',\n",
+       " 'http://allrecipes.com//recipe/74837/sugar-free-blueberry-coffee-cake/',\n",
+       " 'http://allrecipes.com//cook/foodwisheswithchefjohn/',\n",
+       " 'http://allrecipes.com//recipe/60012/blueberry-gingerbread/',\n",
+       " 'http://allrecipes.com//recipe/223399/best-blueberry-buckle/']"
+      ]
+     },
+     "execution_count": 93,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "final_links_recipe = r1 + r2 + r3\n",
+    "final_links_recipe"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 120,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[u'Preheat oven to 375 degrees F (190 degrees C). Lightly grease a 9 inch pie plate.',\n",
+       "  u'Mound sliced apples in the pie plate. Sprinkle with orange juice.',\n",
+       "  u'In a medium bowl, mix the flour, sugar, cinnamon, nutmeg, and salt. Cut in butter until the mixture resembles coarse crumbs. Scatter over the apples.',\n",
+       "  u'Bake in preheated oven for 45 minutes. Serve warm.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease and flour a 9x5-inch loaf pan.',\n",
+       "  u'Mix brown sugar and cinnamon together in a bowl.',\n",
+       "  u'Beat white sugar and butter together in a bowl using an electric mixer until smooth and creamy. Beat in eggs, 1 at a time, until incorporated; add vanilla extract.',\n",
+       "  u'Combine flour and baking powder together in a bowl; stir into creamed butter mixture. Mix milk into batter until smooth. Pour half the batter into the prepared loaf pan; add half the apples and half the brown sugar mixture. Lightly pat apple mixture into batter. Pour the remaining batter over apple layer; top with remaining apples and brown sugar mixture. Lightly pat apples into batter; swirl brown sugar mixture through apples using a finger or spoon.',\n",
+       "  u'Bake in the preheated oven until a toothpick inserted in the center of the loaf comes out clean, 30 to 40 minutes.',\n",
+       "  u''],\n",
+       " [u'Preheat the oven to 350 degrees F (175 degrees C). Grease a 9x13 inch baking pan.',\n",
+       "  u'In a medium bowl, mix together the butter, brown sugar and egg until smooth. Stir in applesauce. Combine the flour, baking soda, salt and pumpkin pie spice; stir into the applesauce mixture until well blended. Spread evenly into the prepared pan.',\n",
+       "  u'Bake for 25 minutes in the preheated oven, or until edges are golden. Cool in the pan over a wire rack.',\n",
+       "  u\"In a small bowl, mix together the confectioners' sugar and margarine. Stir in vanilla and milk until smooth. Spread over cooled bars before cutting into squares.\",\n",
+       "  u''],\n",
+       " [u'In a large bowl, toss apples with lemon juice and set aside. Pour water into a Dutch oven over medium heat. Combine sugar, cornstarch, cinnamon, salt, and nutmeg in a bowl; add to water, stir well, and bring to a boil. Boil for 2 minutes, stirring constantly.',\n",
+       "  u'Add apples and return to a boil. Reduce heat, cover and simmer until apples are tender, about 6 to 8 minutes. Cool for 30 minutes.',\n",
+       "  u'Ladle into 5 freezer containers, leaving 1/2 inch headspace. Cool at room temperature no longer than 1 1/2 hours.',\n",
+       "  u'Seal and freeze. Can be stored for up to 12 months.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease a 9x9 inch baking dish.',\n",
+       "  u'In a large bowl, beat together the melted butter, sugar, and egg until fluffy. Fold in the apples and walnuts. In a separate bowl, sift together the flour, salt, baking powder, baking soda, and cinnamon. Stir the flour mixture into the wet mixture until just blended. Spread the batter evenly in the prepared baking dish.',\n",
+       "  u'Bake 35 minutes in the preheated oven, or until a toothpick inserted in the center comes out clean.',\n",
+       "  u''],\n",
+       " [u'Preheat the oven to 425 degrees F (220 degrees C). Press the pie crust into and up the sides of a 9 inch pie plate.',\n",
+       "  u'In a medium bowl, stir together 3/4 cup sugar, 2 tablespoons of flour, and salt. Mix in the sour cream, egg and vanilla until smooth. Add apples, and stir to coat. Scrape the mixture into the pie shell.',\n",
+       "  u'Bake for 15 minutes in the preheated oven, then reduce heat to 350 degrees F (175 degrees C), and continue baking for 30 minutes more.',\n",
+       "  u'While the pie is baking, prepare the topping in a medium bowl. Stir together 1/3 cup of flour, 1/3 cup sugar, and cinnamon. Cut in the butter until the mixture resembles fine crumbs.',\n",
+       "  u'After the 30 minute bake time has passed, cover the top of the pie with the crumb topping, and continue to bake for 15 minutes, or until topping is lightly browned and apples are tender. Allow the pie to cool, then refrigerate until chilled before serving.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 375 degrees F (190 degrees C). Grease and flour 24 muffin cups, or use paper liners. Sift together the flour, baking soda, salt, cinnamon, and nutmeg. Set aside.',\n",
+       "  u'In a large bowl, cream together the shortening and sugar until light and fluffy. Beat in the eggs one at a time, then stir in the vanilla and buttermilk. Beat in the flour mixture, mixing just until incorporated. Fold in the mashed bananas and shredded apples. Fill each muffin cup half full.',\n",
+       "  u'Bake in the preheated oven for 20 to 25 minutes, or until a toothpick inserted into the center comes out clean. Allow to cool.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 375 degrees F (190 degrees C).',\n",
+       "  u'To Make Taffy: In a small bowl combine brown sugar, melted butter or margarine, and 1/3 cup flour. Mix well and set aside.',\n",
+       "  u'To Make Apple Filling: Place apples in a large bowl. Add white sugar, 3 tablespoons flour, cinnamon, and lemon juice. Toss until all ingredients are mixed well and apples are thoroughly coated.',\n",
+       "  u'Spoon half of apple filling into pastry-lined deep-dish pan. Top with half of caramels and half of taffy mixture. Repeat process with remaining apple filling, caramels and taffy mixture. Place top pastry over filling and seal well (this is very important--if edges are not sealed, caramel will leak out all over). Cut steam vents and brush top crust with milk or light cream.',\n",
+       "  u'Cover pie with foil and place on a baking sheet. Bake in preheated oven for 25 minutes. Remove foil from pie and bake for another 20 to 25 minutes, until crust is golden. Serve warm.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C) lightly grease and flour a 9x13 inch pan.',\n",
+       "  u'Sift together flour, salt, cinnamon and baking powder. Set aside.',\n",
+       "  u'In a large bowl, beat eggs and sugar for 15 minutes on high speed with an electric mixer. Add oil and blend in.',\n",
+       "  u'Add four mixture and mix well. Add vanilla. Fold in apples and nuts. Pour batter into 9x13 inch pan.',\n",
+       "  u'In a small bowl, mix 4 teaspoons sugar with 1 teaspoon cinnamon. Sprinkle over cake.',\n",
+       "  u'Bake at 350 degrees F (175 degrees C) for 50 to 60 minutes or until a toothpick inserted into center of cake comes out clean.',\n",
+       "  u''],\n",
+       " [u'Mix flour, brown sugar, 1/2 cup of white sugar, 1/2 teaspoon cinnamon, nutmeg, and salt together in a bowl. Combine butter with the flour mixture using fingers or a fork until coarse crumbs form. Stir in walnuts and set aside.',\n",
+       "  u'Whisk together 1/3 cup sugar, cornstarch, ginger, and 1/2 teaspoon cinnamon. Place the apples in a slow cooker, stir in the cornstarch mixture; toss with lemon juice. Sprinkle the walnut crumb topping on top. Cover and cook on High for 2 hours or Low for 4 hours, until apples are tender. Partially uncover the slow cooker to allow the topping to harden, about 1 hour.',\n",
+       "  u''],\n",
+       " [u'In a medium mixing bowl, combine pudding mix, milk, and orange juice concentrate. Beat with an electric mixer on medium speed for 2 minutes. Mix in sour cream.',\n",
+       "  u'In a large salad bowl, combine fruits. Gently mix in orange dressing. Cover, and refrigerate for 2 hours.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 375 degrees F (190 degrees C).',\n",
+       "  u'Place apples in an 8x8 inch baking dish. Toss apples with syrup. In a separate bowl, mix together flour, oats, sugar, and salt. Cut in butter until mixture is crumbly. Sprinkle mixture evenly over apples.',\n",
+       "  u'Bake in the preheated oven for 35 minutes, until topping is golden brown. Serve warm or at room temperature.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C).',\n",
+       "  u'Toss apples with white sugar and 1/2 teaspoon cinnamon in a medium bowl to coat; pour into a 9-inch square baking dish.',\n",
+       "  u'Mix brown sugar, oats, flour, and 1 teaspoon cinnamon in a separate bowl. Use a pastry cutter or 2 forks to mash cold butter into the oats mixture until the mixture resembles coarse crumbs; spread over the apples to the edges of the baking dish. Pat the topping gently until even.',\n",
+       "  u'Bake in preheated oven until golden brown and sides are bubbling, about 40 minutes.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C).',\n",
+       "  u'Place apples in a 9x13 inch baking dish. In a bowl, mix melted butter, flour, sugar, oats, and 1 tablespoon cinnamon to form a crumbly mixture. Sprinkle over apples. Dot with remaining 1/4 cup butter, and sprinkle with remaining 1 tablespoon cinnamon.',\n",
+       "  u'Bake 50 minutes in the preheated oven, until lightly browned and apples are tender.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 400 degrees F (200 degrees C). Butter a 9x13 inch pan.',\n",
+       "  u'On a lightly floured surface, roll pastry into a large rectangle, about 24 by 16 inches. Cut into 6 square pieces. Place an apple on each pastry square with the cored opening facing upward. Cut butter into 8 pieces. Place 1 piece of butter in the opening of each apple; reserve remaining butter for sauce. Divide brown sugar between apples, poking some inside each cored opening and the rest around the base of each apple. Sprinkle cinnamon and nutmeg over the apples.',\n",
+       "  u'With slightly wet fingertips, bring one corner of pastry square up to the top of the apple, then bring the opposite corner to the top and press together. Bring up the two remaining corners, and seal. Slightly pinch the dough at the sides to completely seal in the apple. Repeat with the remaining apples. Place in prepared baking dish.',\n",
+       "  u'In a saucepan, combine water, white sugar, vanilla extract and reserved butter. Place over medium heat, and bring to a boil in a large saucepan. Boil for 5 minutes, or until sugar is dissolved. Carefully pour over dumplings.',\n",
+       "  u'Bake in preheated oven for 50 to 60 minutes. Place each apple dumpling in a dessert bowl, and spoon some sauce over the top.',\n",
+       "  u''],\n",
+       " [u'Beat shortening and brown sugar together until light and fluffy. Beat in egg and blend thoroughly.',\n",
+       "  u'Stir together flour, baking soda, salt, cinnamon, cloves and nutmeg.',\n",
+       "  u'Stir half the dry ingredients into creamed mixture. Stir in nuts, apple and raisins, then stir in remaining half of dry ingredients and milk. Mix well.',\n",
+       "  u'Drop from tablespoon 1 1/2 inches apart onto lightly greased baking sheet. Bake in a preheated 400 degree oven for 10-12 minutes. Remove cookies to racks and while still warm, spread with glaze.',\n",
+       "  u'To make Glaze: Combine powdered sugar, butter, vanilla and enough cream to make glaze of spreading consistency. Beat until smooth. Spread on warm cookies.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease and flour a 9x13-inch pan.',\n",
+       "  u'In a large bowl, sift together flour, sugar, salt, and baking soda. Make a well in the center and add oil, eggs, and vanilla. Mix well (batter will be thick). Fold in chopped apples and nuts. Spread batter into prepared pan.',\n",
+       "  u'Bake in preheated oven until a toothpick inserted into cake comes out clean, 40 to 50 minutes. Glaze while still hot.',\n",
+       "  u'To make the glaze: In a saucepan, combine brown sugar, milk, and butter. Bring to a boil and continue cooking for 2 1/2 minutes, stirring constantly. Pour over cake while still hot.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C).',\n",
+       "  u'In a medium bowl, combine flour, oats, brown sugar, cinnamon and melted butter. Stir until crumbly. Press half the oat mixture into a 9x13 inch baking dish. Cover with sliced apples.',\n",
+       "  u'In a medium saucepan, combine white sugar, cornstarch, water and vanilla. Cook, stirring, until thick and clear, 10 minutes. Pour over apples. Cover apples with remaining crumble mixture.',\n",
+       "  u'Bake in preheated oven 45 minutes, until bubbly and golden.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease and flour a 10 inch Bundt or tube pan. In a medium bowl, combine the diced apples, 1 tablespoon white sugar and 1 teaspoon cinnamon; set aside. Sift together the flour, baking powder and salt; set aside.',\n",
+       "  u'In a large bowl, combine 2 cups white sugar, oil, orange juice, vanilla and eggs. Beat at high speed until smooth. Stir in flour mixture. Fold in chopped walnuts.',\n",
+       "  u'Pour 1/3 of the batter into prepared pan. Sprinkle with 1/2 of the apple mixture. Alternate layers of batter and filling, ending with batter.',\n",
+       "  u\"Bake in preheated oven for 55 to 60 minutes, or until the top springs back when lightly touched. Let cool in pan for 10 minutes, then turn out onto a wire rack and cool completely. Sprinkle with confectioners' sugar.\",\n",
+       "  u''],\n",
+       " [u'Preheat oven to 325 degrees F (165 degrees C). Generously grease a 2-quart baking dish.',\n",
+       "  u'Arrange apple slices in an even layer in the baking dish. In a small bowl, mix together 1/2 cup sugar, cinnamon, and 1/2 cup pecans. Sprinkle mixture over apples.',\n",
+       "  u'In a medium bowl, mix together flour, 1 cup sugar, baking powder, and salt. In a separate bowl whisk together egg, evaporated milk, and melted butter. Pour milk mixture into flour mixture all at once, and stir until smooth. Pour mixture over apples, and sprinkle top with 1/4 cup pecans.',\n",
+       "  u'Bake in the preheated oven for 55 minutes.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 375 degrees F (190 degrees C).',\n",
+       "  u'In a medium bowl, cream butter and sugar together until smooth. Stir in the eggs and vanilla. Sift together the flour, baking soda, cloves and cinnamon, stir into the creamed mixture. Then add the mashed bananas, rolled oats and chocolate chips, mix until well blended.',\n",
+       "  u'Drop dough by rounded spoonfuls onto unprepared cookie sheets. Bake for 10 to 12 minutes in the preheated oven. Remove cookies from pan to cool on wire racks.',\n",
+       "  u''],\n",
+       " [u'In a medium bowl, combine pudding mix and milk and stir until mix is dissolved. Refrigerate 15 minutes, until partially set.',\n",
+       "  u'Stir condensed milk into pudding mixture until smooth. Fold in sour cream and whipped topping. Fold in bananas.',\n",
+       "  u'Make a single layer of vanilla wafers in the bottom of a 9x13 inch dish. Spread pudding evenly over wafers. Crush remaining wafers and sprinkle on top. Refrigerate until serving.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease a 9x13 inch baking pan.',\n",
+       "  u'In a large bowl, cream together the shortening and sugar until smooth. Stir in the milk and 1 teaspoon vanilla. Combine the flour, baking soda and 1/2 teaspoon salt; stir into the sugar mixture. Mix in 1 banana, 1 teaspoon lemon juice and walnuts. Spread evenly into the prepared pan.',\n",
+       "  u'Bake for 25 to 30 minutes in the preheated oven, until a toothpick inserted into the center comes out clean. Let bars cool in the pan on a wire rack.',\n",
+       "  u\"To make the frosting: In a medium bowl, mix together the melted butter, 1 teaspoon vanilla, confectioners' sugar, 1/2 banana, 1/2 teaspoon of salt and 1/4 teaspoon lemon juice using an electric mixer. Beat until smooth. Spread over cooled bars and then cut into squares.\",\n",
+       "  u''],\n",
+       " [u'Preheat the grill for high heat.',\n",
+       "  u'Spray 4 sheets of aluminum foil, large enough to wrap bananas, with cooking spray.',\n",
+       "  u'Slice the peel of the banana from stem to bottom, while slicing the banana inside lengthwise. The bananas can be cut into slices instead if you like, (while still in the peel) for easier handling later.',\n",
+       "  u'Carefully open the banana just wide enough to place the chocolate chips and marshmallows inside the peel with the banana. Stuff with as much of the chocolate chips and marshmallows as desired.',\n",
+       "  u'Wrap the bananas with the aluminum foil and place on the grill or directly in the coals of a fire. Leave in long enough to melt the chips and the marshmallows, about 5 minutes. Unwrap bananas, open the peels wide, and eat with a spoon.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease and flour a 10x15 inch jelly roll pan.',\n",
+       "  u'In a large bowl, cream butter, white sugar and brown sugar until fluffy. Beat in egg and vanilla. Fold in mashed banana. In a separate bowl, mix flour, baking powder and salt. Fold flour mixture into butter mixture. Stir in chocolate chips. Spread in prepared pan.',\n",
+       "  u'Bake in preheated oven 20 minutes, until set. Cool before cutting into squares.',\n",
+       "  u''],\n",
+       " [u'Slice strawberries and sprinkle them with sugar. Cut the bananas into slices and toss with orange juice. Combine pudding mix with milk and mix until smooth. Cut the cake into 1 inch cubes.',\n",
+       "  u'Use half of the cake cubes to line the bottom of a large glass bowl. Layer half of the strawberries followed by half of the blueberries, and then half of the bananas. Spread half of the pudding over the fruit. Repeat layers in the same order.',\n",
+       "  u'In a medium bowl, whip the cream to stiff peaks and spread over top of trifle. Garnish with maraschino cherries and slivered almonds.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease and flour a 9x9 inch pan.',\n",
+       "  u'In a large bowl, cream butter and sugar until light. Add eggs and beat well. Dissolve soda in the sour cream and add it to the butter mixture. Beat well. Add the mashed bananas and mix in. Add cake flour and mix well. Stir in vanilla extract.',\n",
+       "  u'Pour batter into a 9x9 inch pan and bake at 350 degrees F (175 degrees C) for 45 minutes or until done.',\n",
+       "  u''],\n",
+       " [u'Mix graham cracker crumbs, sugar, melted butter or margarine, and ginger until well blended . Press mixture into a 9 inch pie plate. Cool in refrigerator.',\n",
+       "  u'In a sauce pan, boil an unopened can of sweetened condensed milk for 3 hours. Monitor the water closely, to make sure there is always water in the pan. Remove can from heat and let cool for 10 to 15 minutes.',\n",
+       "  u'Open can and pour toffee into pie crust. Allow to cool.',\n",
+       "  u'Slice bananas over toffee.',\n",
+       "  u'Whip 2 cups of cream and spoon it on top of bananas. Refrigerate before serving.',\n",
+       "  u''],\n",
+       " [u'Stir together flour, 1 1/3 cups oats, salt, and baking soda.',\n",
+       "  u'In a large bowl, cream 1/2 cup butter or margarine with 2/3 cup brown sugar. Beat in the eggs, then the bananas and vanilla. Beat the flour mixture into the banana mixture. Turn the batter into a greased and floured 8 inch square pan.',\n",
+       "  u'Mix 3/4 cup oats, 1/3 cup brown sugar, melted butter or margarine, walnuts, and cinnamon together until crumbly. Sprinkle evenly over the top of the batter.',\n",
+       "  u'Bake in preheated oven at 350 degrees F (175 degrees C) for 40 to 45 minutes, or until it tests done. Transfer to a rack to cool.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease cookie sheets.',\n",
+       "  u'In a large bowl, cream together shortening and brown sugar. Beat in egg and mashed banana, then stir in vanilla. Combine flour, baking soda, salt, cinnamon, and cloves; stir into the banana mixture. Mix in rolled oats and walnuts. Drop by rounded spoonfuls onto prepared cookie sheets. Leave room for spreading.',\n",
+       "  u'Bake for 8 to 10 minutes in preheated oven. Allow cookies to cool on cookie sheets for 5 minutes before transferring to a wire rack to cool completely.',\n",
+       "  u''],\n",
+       " [u'In large bowl, combine sweetened condensed milk and water. Add pudding mix; beat until well blended. Chill 5 minutes.',\n",
+       "  u'Fold in whipped cream. Spoon 1 cup pudding mixture into 2 1/2-quart glass serving bowl.',\n",
+       "  u'Top with one-third each of the vanilla wafers, bananas and remaining pudding. Repeat layering twice, ending with pudding mixture. Chill thoroughly. Garnish as desired. Store leftovers covered in refrigerator.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Lightly grease baking sheets.',\n",
+       "  u'In a medium bowl, cream together shortening and white sugar until smooth. Beat in eggs, vanilla extract, and banana. Combine flour, baking soda, and salt; blend thoroughly into the shortening mixture to make a sticky batter. Drop by rounded tablespoons onto the prepared baking sheets.',\n",
+       "  u'Bake 10 to 15 minutes in the preheated oven, or until lightly browned.',\n",
+       "  u\"In a medium bowl, blend butter, confectioners' sugar, milk and vanilla extract. Adjust amount of milk as necessary to attain a drizzling consistency. Drizzle over warm cookies.\",\n",
+       "  u''],\n",
+       " [u'In medium saucepan combine sugar, flour, and salt. Add eggs and stir well. Stir in milk, and cook over low heat, stirring constantly. When mixture begins to thicken, remove from heat and continue to stir, cooling slightly. Stir in vanilla and butter until smooth.',\n",
+       "  u'Layer pudding with bananas and vanilla wafers in a serving dish. Chill at least one hour in refrigerator before serving.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Spray a 10 inch Bundt pan with non-stick cooking spray.',\n",
+       "  u'In a large bowl, cream together the butter and sugar until light and fluffy. Beat in the eggs one at a time. Beat in the sliced bananas, sour cream and baking soda. Beat in the flour. Pour batter into prepared pan.',\n",
+       "  u'Bake in the preheated oven for 60 minutes, or until a toothpick inserted into the center of the cake comes out clean. Let cool in pan for 10 minutes, then turn out onto a wire rack and cool completely.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease and flour a 5x9-inch loaf pan.',\n",
+       "  u'Mash bananas and add flour, sugar, butter, vanilla, baking powder, baking soda and egg. Mix well. Pour into loaf pan.',\n",
+       "  u'Bake in preheated oven until toothpick inserted into center of cake comes out clean, 50 to 60 minutes.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease a 9x5 inch loaf pan.',\n",
+       "  u'In a large mixing bowl, mix eggs, milk, sugar, and vanilla until smooth. Stir in bread, bananas, and chocolate chips, and let rest 5 minutes for bread to soak. Pour into prepared pan.',\n",
+       "  u'Line a roasting pan with a damp kitchen towel. Place loaf pan on towel inside roasting pan, and place roasting pan on oven rack. Fill roasting pan with water to reach halfway up the sides of the loaf pan. Bake in preheated oven for 1 hour, or until a knife inserted in the center comes out clean.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C).',\n",
+       "  u'Line the bottom and sides of a 9-inch pie plate with a layer of alternating vanilla wafer crumbs and banana slices.',\n",
+       "  u'To Make Pudding: In a medium saucepan, combine 1 1/2 cups sugar with flour. Mix well, then stir in half the milk. Beat egg yolks and whisk into sugar mixture. Add remaining milk and butter or margarine.',\n",
+       "  u'Place mixture over low heat and cook until thickened, stirring frequently. Remove from heat and stir in vanilla extract. Pour half of pudding over vanilla wafer and banana layer while still hot.',\n",
+       "  u'Make another layer of alternating vanilla wafers and banana slices on top of pudding layer. Pour remaining pudding over second wafer and banana layer.',\n",
+       "  u'To Make Meringue: In a large glass or metal bowl, beat egg whites until foamy. Gradually add 1/4 cup sugar, continuing to beat until whites are stiff. Spread meringue into pie pan, making sure to completely cover pudding layer.',\n",
+       "  u'Bake in preheated oven for 15 minutes, just until meringue is browned. Chill before serving.',\n",
+       "  u''],\n",
+       " [u'Preheat an oven to 350 degrees F (175 degrees C). Grease a 9x13 inch baking pan.',\n",
+       "  u'Beat the butter and sugar with an electric mixer in a large bowl until light and fluffy. Add the egg and the vanilla and beat until well combined. Stir in the mashed banana, set aside.',\n",
+       "  u'Stir together the flour, baking soda, baking powder, and salt in a separate large bowl, and make a well in the center. Pour the banana mixture into the well and stir just until combined.',\n",
+       "  u'Remove half of the batter from the bowl. Mix the cocoa powder into the batter remaining in the bowl and stir well. Spread the cocoa batter in the bottom of the prepared pan. Spoon the remaining batter on top and use a knife to swirl the batter into a marbled design.',\n",
+       "  u'Bake in the preheated oven until the edges are golden, about 25 minutes. Allow to cool before cutting into 24 pieces.',\n",
+       "  u''],\n",
+       " [u'In a medium bowl, stir together condensed milk and water. Beat in pudding mix until smooth. Chill in refrigerator 5 minutes.',\n",
+       "  u'In a separate bowl, whip cream until stiff peaks form. Fold whipped cream into chilled pudding mixture.',\n",
+       "  u'Dip sliced bananas in lemon juice. Shake off excess.',\n",
+       "  u'In a 2 1/2 quart serving bowl, spoon 1 cup pudding mixture. Top with one-third each of the wafers, bananas and remaining pudding. Repeat layers twice. Chill until serving.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease and flour a 9x13 inch pan. Put 1 tablespoon lemon juice in a measuring cup with 2/3 cup milk. Set aside. Mash bananas with a fork, adding the remaining 1 tablespoon lemon juice to them as you mash. Set aside.',\n",
+       "  u'In a large bowl, combine cake mix and baking soda. Stir to combine. Add bananas, softened butter, milk mixture, eggs and vanilla. Beat at low speed until moistened (about 30 seconds). Beat at medium speed for 4 minutes. Pour into prepared pan.',\n",
+       "  u'Bake in the preheated oven for 30 to 35 minutes, or until center of cake springs back when lightly tapped. A toothpick stuck in the center may leave a slight crumb. Allow to cool on a wire rack.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 275 degrees F (135 degrees C). Make the crust: In a food processor, blend together the graham cracker crumbs, almonds and sugar until the almonds are ground fine. Pour in the melted butter and caramel while processing, until mixture is combined. Press the mixture onto the bottom, and half way up the side of a 10 inch springform pan.',\n",
+       "  u'Make the filling: In a metal bowl over a pan of barely simmering water, melt the white chocolate, stirring until smooth. Remove from heat and set aside. In a large bowl, beat the cream cheese and 3/4 cup sugar until smooth. Beat in the eggs and the egg yolks, one at a time. Beat in the flour and the vanilla and blend in the melted white chocolate slowly, beating until the filling is well combined. Pour filling into crust.',\n",
+       "  u'Bake in the middle of preheated oven for 1 hour. Then turn off the heat, and crack the oven door an inch, letting the cheesecake cool in the oven to room temperature. Cover loosely and refrigerate overnight before removing from pan.',\n",
+       "  u'Make the topping: In a saucepan, combine 1/2 cup sugar and cornstarch. Stir in water and blueberries. Bring to a boil, then simmer for 10 minutes, stirring occasionally. Press through a fine sieve. Stir in lemon juice, allow to cool, and store in a glass jar.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Grease a 9 inch square baking dish.',\n",
+       "  u'To make the crust: Cream shortening, sugar, one egg, milk and almond extract in a large bowl. Mix in flour and baking powder, stirring constantly. Spread crust evenly in baking pan. Top with blueberries.',\n",
+       "  u'To make the topping: In a medium bowl, beat two eggs, and cream cheese until smooth. Stir in powdered sugar and almond extract. Spread over blueberries.',\n",
+       "  u'Bake 55 to 60 minutes, or until firm to the touch. Cool in pan before cutting.',\n",
+       "  u''],\n",
+       " [u'Preheat the oven to 350 degrees F (175 degrees C). Grease and flour a 10 inch Bundt pan.',\n",
+       "  u'In a large bowl, cream together the butter and sugar until light and fluffy. Beat in the eggs one at a time, then stir in the lemon extract. Combine the flour, baking powder, and lemon zest; stir into the batter alternating with the milk. I like to use a spatula and stir by hand, mixing just until blended so the batter is not over mixed. Be sure to scrape the bottom and sides of the bowl often. Fold in the blueberries. Spoon the batter into the prepared pan.',\n",
+       "  u'Bake for 1 hour in the preheated oven, or until a toothpick inserted into the center comes out clean. Let cool in the pan for at least 10 minutes, then invert onto a wire rack to cool completely.',\n",
+       "  u''],\n",
+       " [u'Preheat the oven to 350 degrees F (175 degrees C). Grease a 9 inch square baking dish.',\n",
+       "  u'In a large bowl, stir together the flour, 3/4 cup of sugar, and baking powder. Add the milk, shortening, 1 egg, and lemon extract, and use an electric mixer to mix on low speed for 1 minute, then on medium speed for 1 minute. Pour the batter into the prepared pan, and spread evenly. Sprinkle blueberries over the batter.',\n",
+       "  u'In a medium bowl, stir together 2 beaten eggs, ricotta cheese, 1/3 cup of sugar, and vanilla extract. Spoon this mixture over the blueberries, and spread evenly.',\n",
+       "  u'Bake for 55 to 60 minutes in the preheated oven, until a knife inserted near the center comes out clean. Cool completely before cutting into squares and serving.',\n",
+       "  u''],\n",
+       " [u'Preheat the oven to 375 degrees F (190 degrees C). Grease a 9 inch springform pan.',\n",
+       "  u'In a medium bowl, stir together the flour, 1/2 cup of sugar, and baking powder. Mix in the butter by pinching between your fingers or using a pastry blender until the mixture resembles coarse crumbs. Stir in the egg and 1 teaspoon of vanilla. Pat lightly into the bottom of the prepared pan. Pour blueberries over the top.',\n",
+       "  u'In another medium bowl, whisk together the sour cream, 1/2 cup of sugar, egg yolks and 1 teaspoon of vanilla until smooth. Pour over the blueberries.',\n",
+       "  u'Bake for 60 to 70 minutes in the preheated oven, until the top is lightly browned. Cool, then run a knife around the edge of the pan. Remove the outer ring of the pan, and cut into wedges to serve.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 425 degrees F (220 degrees C). Generously butter a 2 1/2-quart baking dish.',\n",
+       "  u'Pour blueberries into prepared baking dish.',\n",
+       "  u'Blend milk, sugar, flour, eggs, vanilla extract, and salt in a blender until batter is smooth. Pour batter over blueberries and gently shake to remove any air bubbles.',\n",
+       "  u'Bake in the preheated oven until puffed and center is set, 25 to 30 minutes. Cool until clafoutis deflates and is just warm.',\n",
+       "  u''],\n",
+       " [u'Preheat the oven to 425 degrees F (220 degrees C).',\n",
+       "  u'Press one of the pie crusts into a 9 inch pie plate. In a large bowl, stir together 1/2 cup of sugar, cornstarch and cinnamon. Stir in the cherry pie filling and blueberries. Spoon into the pie crust. Top with the second crust, and press the edges to seal. Flute edges, or press with the tines of a fork. In a cup, whisk together the egg white and water with a fork. Brush over the top of the pie, then sprinkle with 2 teaspoons of sugar.',\n",
+       "  u'Bake for 45 to 55 minutes in the preheated oven, or until crust is golden brown. Cover the edges of the crust with aluminum foil if they appear to be getting too dark. Cool for at least 2 hours to allow the filling to set before serving.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 375 degrees F (190 degrees C). Grease and flour a 9 inch pan. Sift together the flour, baking powder and salt. Set aside.',\n",
+       "  u'In a large bowl, whisk together the oil, sugar and egg. Stir in the flour mixture alternately with the milk, mixing just until incorporated. Fold in the blueberries. Pour batter into prepared pan. Cover with streusel topping.',\n",
+       "  u'For the topping: In a bowl, combine 1/3 cup flour, cinnamon and 1/2 cup sugar. Cut in the butter until mixture resembles coarse crumbs.',\n",
+       "  u'Bake in the preheated oven for 45 minutes, or until a toothpick inserted into the center of the cake comes out clean. Allow to cool.',\n",
+       "  u''],\n",
+       " [u'Preheat the oven to 350 degrees F (175 degrees C).',\n",
+       "  u'Place the blueberries into an 8x8 inch square baking dish. In a medium bowl, cream together the margarine and 3/4 cup sugar until smooth. Stir the flour into the creamed mixture alternately with the milk. Spoon batter over blueberries. Mix together the remaining 3/4 cup sugar with the cornstarch and nutmeg. Sprinkle over the top. Pour boiling water over the whole thing.',\n",
+       "  u'Bake for 1 hour in the preheated oven. Cool for at least 10 minutes to set. Serve with whipped topping or vanilla ice cream.',\n",
+       "  u''],\n",
+       " [u'In a large mixing bowl, cream the shortening, sugar, egg, milk, almond extract and lemon zest. Mix well after the addition of each ingredient. Combine the flour, baking powder and salt; blend into the sugar mixture. Fold in the blueberries. Cover and chill for 4 hours.',\n",
+       "  u'Preheat oven to 375 degrees F. Drop dough by teaspoonfuls onto ungreased cookie sheets, about 1 1/2 inches apart.',\n",
+       "  u'Bake 12 to 15 minutes in the preheated oven. Let the cookies cool on the baking sheets for a few minutes before transferring to wire racks to cool completely.',\n",
+       "  u''],\n",
+       " [u'Combine crumbs, 2 tablespoons sugar and butter. Pat mixture into the bottom of a 9 inch springform pan.',\n",
+       "  u'Mash cream cheese until soft and creamy. Gradually beat in sour cream, 3/4 cup sugar, vanilla and flour. Beat in eggs one at a time.',\n",
+       "  u'Pour mixture into crumb-lined pan. Bake in a preheated 325 degree F (165 degrees C) oven for 1 hour or until firm to the touch.',\n",
+       "  u'Cool and then remove cake from pan by loosening edges with a knife. Place frozen blueberries on top of cake. Melt jelly and spoon over blueberries to glaze. Chill until ready to serve.',\n",
+       "  u''],\n",
+       " [u'Mix sugar, flour, and cinnamon in large bowl. Add fruit. Add lemon juice, and stir well.',\n",
+       "  u'Pour into a 9 inch unbaked pie shell. Dot with the butter or margarine. Cover with top crust and flute edges. Cut small slits in the top.',\n",
+       "  u'Bake at 375 degrees F (190 degrees C) for 1 hour. I put a baking sheet under mine to catch any liquid that might bubble over.',\n",
+       "  u''],\n",
+       " [u'In a saucepan, combine sugar, cornstarch and salt. Stir in water and 1 cup of blueberries. Cook and stir over medium heat, until thick, approximately 8 to 10 minutes.',\n",
+       "  u'Add butter and let cool about 5 minutes. Stir in remaining blueberries.',\n",
+       "  u'Pour into baked pie shell and cool in the refrigerator for 2 to 4 hours.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 375 degrees F (190 degrees C). Place butter cubes in the freezer for 15 minutes.',\n",
+       "  u'Whisk together flour, sugar, salt, and baking powder in a large bowl. Sprinkle in Chinese five-spice powder.',\n",
+       "  u'Cut in frozen butter using a pastry cutter until the butter pieces are about the size of peas. Mix in egg yolk and continue cutting in until thoroughly combined. Drizzle in ice water and stir to combine. The dough should just come together when pinched between your fingers.',\n",
+       "  u'Pour about 3/4 of the crumb mixture into an ungreased 9x9-inch baking dish. Press the mixture down firmly using the back of a spoon. Spread blueberries in one layer and sprinkle with remaining crumbly dough.',\n",
+       "  u'Bake in the preheated oven until the top is golden and sides are crisp and browned, 30 to 35 minutes. Cool completely before serving.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 325 degrees F. In bowl, combine blueberries, sweetened condensed milk and lemon peel.',\n",
+       "  u'In large bowl, cut 3/4 cup butter into 1 1/2 cups biscuit mix until crumbly; stir in blueberry mixture. Spread in greased 9-inch square baking pan.',\n",
+       "  u'In small bowl, combine remaining 1/2 cup biscuit mix and brown sugar; cut in remaining 2 tablespoons butter until crumbly. Add nuts. Sprinkle over cobbler.',\n",
+       "  u'Bake 65 to 70 minutes. Serve warm with vanilla ice cream and Blueberry Sauce. Store leftovers covered in refrigerator.',\n",
+       "  u'Blueberry Sauce: In saucepan, combine sugar, cornstarch, cinnamon, and nutmeg. Gradually add water. Cook and stir until thickened. Stir in blueberries; cook and stir until hot.',\n",
+       "  u''],\n",
+       " [u'Pour one pint of the blueberries into the baked pie shell.',\n",
+       "  u'Combine flour, butter, lemon juice and sugar. Mix thoroughly. Add the remaining pint of blueberries and bring just to a boil over medium heat. Berries should begin to pop open.',\n",
+       "  u'Pour cooked berries over fresh berries. Chill pie and serve with whipped cream.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Place butter in an 8-inch square baking dish.',\n",
+       "  u'Melt butter in the preheating oven, about 5 minutes. Remove from oven.',\n",
+       "  u'Mix flour, sugar, and milk in a bowl until combined; pour batter over melted butter. Scatter blueberries over batter.',\n",
+       "  u'Bake in preheated oven until a toothpick inserted into the center comes out clean, about 1 hour.',\n",
+       "  u''],\n",
+       " [u'Preheat the oven to 350 degrees F (175 degrees C). Grease and flour a 9x13 inch baking pan.',\n",
+       "  u'In a large bowl, stir together the melted butter, milk, eggs, vanilla and 1 1/2 cups sugar substitute. Combine 3 cups of flour and baking powder; stir into the wet ingredients until just blended. Fold in the blueberries. Spread evenly in the prepared pan.',\n",
+       "  u'In a small bowl, stir together the brown sugar substitute, 3/4 cup of flour, and cinnamon. Stir in the softened butter with a fork until the mixture is crumbly. Sprinkle over the top of the cake.',\n",
+       "  u'Bake for 35 to 40 minutes in the preheated oven, until a toothpick inserted into the center of the cake comes out clean. This cake is best served warm.',\n",
+       "  u''],\n",
+       " [],\n",
+       " [u'Preheat the oven to 350 degrees F (175 degrees C). Grease and flour an 11x7 inch baking dish.',\n",
+       "  u'In a large bowl, mix together the oil, 1 cup sugar and molasses until well blended. Beat in the egg. In a separate bowl, stir together the flour, cinnamon, nutmeg, ginger, baking soda and salt. Remove 2 tablespoons of the flour mixture, and toss with blueberries to coat. Stir the remaining dry mixture into the wet ingredients alternately with the buttermilk, mixing after each addition. Carefully stir in blueberries. Pour the batter into the prepared pan, and sprinkle remaining white sugar over the top.',\n",
+       "  u'Bake for 35 to 40 minutes in the preheated oven, until a toothpick inserted into the center comes out clean.',\n",
+       "  u''],\n",
+       " [u'Preheat oven to 350 degrees F (175 degrees C). Butter and flour a springform pan.',\n",
+       "  u'Sift 2 cups flour, baking powder, and salt into a bowl.',\n",
+       "  u'Beat 1/4 cup butter, 3/4 cup sugar, and egg with an electric mixer in a large bowl until smooth. Gradually add milk and beat until fluffy; stir in flour mixture, making a stiff batter. Gently fold in blueberries and spread batter into prepared springform pan.',\n",
+       "  u'Mix 1/2 cup sugar, 1/3 cup flour, cinnamon, and 1/4 cup butter in a bowl until blended and crumbly in texture. Sprinkle on top of batter, then lightly press topping into batter using fingertips.',\n",
+       "  u'Bake in preheated oven until golden and a toothpick inserted in the middle comes out with moist crumbs, about 40 minutes.',\n",
+       "  u'']]"
+      ]
+     },
+     "execution_count": 120,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import unicodedata\n",
+    "import time\n",
+    "from recipe_scrapers import scrap_me\n",
+    "# scrap_me = scrap_me(\"http://allrecipes.com//recipe/232922/apple-cinnamon-white-cake/\")\n",
+    "# print(scrap_me.instructions())\n",
+    "new_data=[]\n",
+    "for link in final_links_recipe:\n",
+    "#            print('\"' + link + '\"')\n",
+    "#          print(st)\n",
+    "        scrap_me1 = scrap_me(link)\n",
+    "        recipe = scrap_me1.instructions()\n",
+    "        new_data.append(recipe)\n",
+    "\n",
+    "new_data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Define the cleaning function"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 122,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# Import BeautifulSoup into your workspace\n",
+    "import re\n",
+    "import nltk\n",
+    "from bs4 import BeautifulSoup \n",
+    "from nltk.corpus import stopwords # Import the stop word list\n",
+    "def review_to_words( raw_review ): \n",
+    "    soup_article = BeautifulSoup(raw_review, \"html.parser\") \n",
+    " \n",
+    "    # Use regular expressions to do a find-and-replace\n",
+    "    cleanedSoup_article = re.sub(\"[^a-zA-Z]\",   # The pattern to search for: in this case- all characters but english letters\n",
+    "                          \" \",                   # The pattern to replace it with\n",
+    "                          soup_article.get_text() )  # The text to search\n",
+    "   \n",
+    "    lower_case = cleanedSoup_article.lower() # Convert to lower case \n",
+    "    words = nltk.word_tokenize(lower_case) # Split into words\n",
+    "    words = [w for w in words if not w in stopwords.words(\"english\")]\n",
+    "    porter = nltk.PorterStemmer()\n",
+    "    lancaster = nltk.LancasterStemmer()\n",
+    "    [porter.stem(w) for w in words]\n",
+    "    return ( \" \".join( words ))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 154,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "columns = ['text' , 'type']\n",
+    "#  df.append(df2, ignore_index=True)\n",
+    "data_pair = [()]\n",
+    "for value in new_data:\n",
+    "    data_pair.append(('recipe',( \" \".join( value ))))\n",
+    "df_recipe = pd.DataFrame(data=data_pair, columns=['text','type'])    \n",
+    "# df_recipe\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 155,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "df_recipe = df_recipe.ix[1:58]\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Add The data to our previous data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 166,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>text</th>\n",
+       "      <th>type</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>love song flo twenty second single rhythm zone...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>season nd season competitive football rangers</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>afromarengo plana jumping spider species genus...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>grisana genus moths noctuidae family</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>kshatriya kulavatauns title nobility conferred...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>robert sands estate historic home located rhin...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>cowboy ninja viking image comics comic book cr...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>7</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>das kriminalmuseum german television series ra...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>universal music latin entertainment division u...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>molineux stadium mlnju mol new championship fo...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>americo sebastiano costantino born october ita...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>11</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>lance edward lem massey september june native ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>neaspilota genus tephritid fruit flies family ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>13</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>faulknor family english family northamptonshir...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>14</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>stefan dimle born june koping sweden bassplaye...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>15</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>holzdorf village municipality jessen elster di...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>16</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>tredinnick cornish surname derives one places ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>17</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>scottish cup th season scotland prestigious fo...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>18</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>gunther schmidt rudersdorf near berlin german ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>robert sargent electrical engineer defense dep...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>20</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>broken rites formally broken rites australia c...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>21</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>deep six song american rock band marilyn manso...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>22</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>usa also known gps iir gps svn american naviga...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>23</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>luan county station chinese chinese railway st...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>24</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>stanek stank village administrative district g...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>carlo pezzati october italian politician mayor...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>26</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>john william moore june december u representat...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>27</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>th division spanish division division spanish ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>28</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>pelham range small mountain range southern van...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>29</th>\n",
+       "      <td>wiki</td>\n",
+       "      <td>katzenthal commune haut rhin department grand ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>128</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Stir together flour, 1 1/3 cups oats, salt, an...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>129</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 350 degrees F (175 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>130</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>In large bowl, combine sweetened condensed mil...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>131</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 350 degrees F (175 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>132</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>In medium saucepan combine sugar, flour, and s...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>133</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 350 degrees F (175 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>134</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 350 degrees F (175 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>135</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 350 degrees F (175 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>136</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 350 degrees F (175 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>137</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat an oven to 350 degrees F (175 degrees ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>138</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>In a medium bowl, stir together condensed milk...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>139</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 350 degrees F (175 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>140</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 275 degrees F (135 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>141</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 350 degrees F (175 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>142</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat the oven to 350 degrees F (175 degrees...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>143</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat the oven to 350 degrees F (175 degrees...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>144</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat the oven to 375 degrees F (190 degrees...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>145</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 425 degrees F (220 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>146</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat the oven to 425 degrees F (220 degrees...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>147</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 375 degrees F (190 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>148</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat the oven to 350 degrees F (175 degrees...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>149</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>In a large mixing bowl, cream the shortening, ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>150</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Combine crumbs, 2 tablespoons sugar and butter...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>151</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Mix sugar, flour, and cinnamon in large bowl. ...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>152</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>In a saucepan, combine sugar, cornstarch and s...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>153</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 375 degrees F (190 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>154</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 325 degrees F. In bowl, combin...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>155</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Pour one pint of the blueberries into the bake...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>156</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat oven to 350 degrees F (175 degrees C)....</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>157</th>\n",
+       "      <td>recipe</td>\n",
+       "      <td>Preheat the oven to 350 degrees F (175 degrees...</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>158 rows × 2 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "       text                                               type\n",
+       "0      wiki  love song flo twenty second single rhythm zone...\n",
+       "1      wiki      season nd season competitive football rangers\n",
+       "2      wiki  afromarengo plana jumping spider species genus...\n",
+       "3      wiki               grisana genus moths noctuidae family\n",
+       "4      wiki  kshatriya kulavatauns title nobility conferred...\n",
+       "5      wiki  robert sands estate historic home located rhin...\n",
+       "6      wiki  cowboy ninja viking image comics comic book cr...\n",
+       "7      wiki  das kriminalmuseum german television series ra...\n",
+       "8      wiki  universal music latin entertainment division u...\n",
+       "9      wiki  molineux stadium mlnju mol new championship fo...\n",
+       "10     wiki  americo sebastiano costantino born october ita...\n",
+       "11     wiki  lance edward lem massey september june native ...\n",
+       "12     wiki  neaspilota genus tephritid fruit flies family ...\n",
+       "13     wiki  faulknor family english family northamptonshir...\n",
+       "14     wiki  stefan dimle born june koping sweden bassplaye...\n",
+       "15     wiki  holzdorf village municipality jessen elster di...\n",
+       "16     wiki  tredinnick cornish surname derives one places ...\n",
+       "17     wiki  scottish cup th season scotland prestigious fo...\n",
+       "18     wiki  gunther schmidt rudersdorf near berlin german ...\n",
+       "19     wiki  robert sargent electrical engineer defense dep...\n",
+       "20     wiki  broken rites formally broken rites australia c...\n",
+       "21     wiki  deep six song american rock band marilyn manso...\n",
+       "22     wiki  usa also known gps iir gps svn american naviga...\n",
+       "23     wiki  luan county station chinese chinese railway st...\n",
+       "24     wiki  stanek stank village administrative district g...\n",
+       "25     wiki  carlo pezzati october italian politician mayor...\n",
+       "26     wiki  john william moore june december u representat...\n",
+       "27     wiki  th division spanish division division spanish ...\n",
+       "28     wiki  pelham range small mountain range southern van...\n",
+       "29     wiki  katzenthal commune haut rhin department grand ...\n",
+       "..      ...                                                ...\n",
+       "128  recipe  Stir together flour, 1 1/3 cups oats, salt, an...\n",
+       "129  recipe  Preheat oven to 350 degrees F (175 degrees C)....\n",
+       "130  recipe  In large bowl, combine sweetened condensed mil...\n",
+       "131  recipe  Preheat oven to 350 degrees F (175 degrees C)....\n",
+       "132  recipe  In medium saucepan combine sugar, flour, and s...\n",
+       "133  recipe  Preheat oven to 350 degrees F (175 degrees C)....\n",
+       "134  recipe  Preheat oven to 350 degrees F (175 degrees C)....\n",
+       "135  recipe  Preheat oven to 350 degrees F (175 degrees C)....\n",
+       "136  recipe  Preheat oven to 350 degrees F (175 degrees C)....\n",
+       "137  recipe  Preheat an oven to 350 degrees F (175 degrees ...\n",
+       "138  recipe  In a medium bowl, stir together condensed milk...\n",
+       "139  recipe  Preheat oven to 350 degrees F (175 degrees C)....\n",
+       "140  recipe  Preheat oven to 275 degrees F (135 degrees C)....\n",
+       "141  recipe  Preheat oven to 350 degrees F (175 degrees C)....\n",
+       "142  recipe  Preheat the oven to 350 degrees F (175 degrees...\n",
+       "143  recipe  Preheat the oven to 350 degrees F (175 degrees...\n",
+       "144  recipe  Preheat the oven to 375 degrees F (190 degrees...\n",
+       "145  recipe  Preheat oven to 425 degrees F (220 degrees C)....\n",
+       "146  recipe  Preheat the oven to 425 degrees F (220 degrees...\n",
+       "147  recipe  Preheat oven to 375 degrees F (190 degrees C)....\n",
+       "148  recipe  Preheat the oven to 350 degrees F (175 degrees...\n",
+       "149  recipe  In a large mixing bowl, cream the shortening, ...\n",
+       "150  recipe  Combine crumbs, 2 tablespoons sugar and butter...\n",
+       "151  recipe  Mix sugar, flour, and cinnamon in large bowl. ...\n",
+       "152  recipe  In a saucepan, combine sugar, cornstarch and s...\n",
+       "153  recipe  Preheat oven to 375 degrees F (190 degrees C)....\n",
+       "154  recipe  Preheat oven to 325 degrees F. In bowl, combin...\n",
+       "155  recipe  Pour one pint of the blueberries into the bake...\n",
+       "156  recipe  Preheat oven to 350 degrees F (175 degrees C)....\n",
+       "157  recipe  Preheat the oven to 350 degrees F (175 degrees...\n",
+       "\n",
+       "[158 rows x 2 columns]"
+      ]
+     },
+     "execution_count": 166,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "import pickle\n",
+    "import unicodedata\n",
+    "df = pd.read_csv('data.csv',header=0, \n",
+    "                    delimiter=\",\")\n",
+    "df = df.ix[1:]\n",
+    "df = df.append(df_recipe,ignore_index=True)\n",
+    "df\n",
+    "# df\n",
+    "# pd.DataFrame([[1, 2], [3, 4]], columns=list('AB'))\n",
+    "# df2 = pd.DataFrame([[5, 6], [7, 8]], columns=list('AB'))\n",
+    "# df.append(df2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Add the new data to the old file"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# df = pd.DataFrame(data=df, columns=['text','type'])\n",
+    "# df.to_csv(\"data_final.csv\",index = False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Cleaning the data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 169,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "preheat oven degrees f degrees c place butter inch square baking dish melt butter preheating oven minutes remove oven mix flour sugar milk bowl combined pour batter melted butter scatter blueberries batter bake preheated oven toothpick inserted center comes clean hour\n"
+     ]
+    }
+   ],
+   "source": [
+    "# df.to_csv(\"data2.csv\",index = False)\n",
+    "clean_review = review_to_words( df[\"type\"][156] )\n",
+    "print(clean_review)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 170,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "clean_train_reviews = []\n",
+    "for d in df[\"type\"]:\n",
+    "    counter = counter + 1\n",
+    "    clean_review = review_to_words( d )\n",
+    "    clean_train_reviews.append(clean_review)\n",
+    "#     d = clean_review"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 171,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "158"
+      ]
+     },
+     "execution_count": 171,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(clean_train_reviews)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Loading Data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Prepare Vocabulary - BOG "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Try to find the 15 most important words"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 241,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Creating the bag of words...\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"Creating the bag of words...\\n\")\n",
+    "from sklearn.feature_extraction.text import CountVectorizer\n",
+    "\n",
+    "# Initialize the \"CountVectorizer\" object, which is scikit-learn's\n",
+    "# bag of words tool.  \n",
+    "vectorizer = CountVectorizer(analyzer = \"word\",   \\\n",
+    "                             tokenizer = None,    \\\n",
+    "                             preprocessor = None, \\\n",
+    "                             stop_words = None,   \\\n",
+    "                             min_df = 15) \n",
+    "\n",
+    "# fit_transform() Convert a collection of text documents (reviews in our example) to a matrix of token counts.\n",
+    "# This implementation produces a sparse representation.\n",
+    "# The input to fit_transform should be a list of strings.\n",
+    "train_data_features = vectorizer.fit_transform(clean_train_reviews)\n",
+    "###train_data_features = vectorizer.fit_transform(train['review'])\n",
+    "\n",
+    "# Numpy arrays are easy to work with, so convert the result to an \n",
+    "# array\n",
+    "\n",
+    "train_data_features = train_data_features.toarray()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 173,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(158, 66)"
+      ]
+     },
+     "execution_count": 173,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "train_data_features.shape"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Train Model - First try simple random forest"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 174,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[u'add', u'also', u'american', u'apples', u'back', u'bake', u'baking', u'bananas', u'batter', u'beat', u'blueberries', u'bowl', u'brown', u'butter', u'center', u'cinnamon', u'combine', u'comes', u'cool', u'cover', u'cream', u'cup', u'cut', u'degrees', u'dish', u'egg', u'eggs', u'first', u'flour', u'grease', u'inch', u'large', u'make', u'medium', u'milk', u'minutes', u'mix', u'mixture', u'monday', u'new', u'one', u'oven', u'pan', u'place', u'pour', u'powder', u'preheat', u'preheated', u'prepared', u'remaining']\n"
+     ]
+    }
+   ],
+   "source": [
+    "vocab = vectorizer.get_feature_names()\n",
+    "print(vocab[0:50])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 175,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(29, u'add')\n",
+      "(20, u'also')\n",
+      "(22, u'american')\n",
+      "(36, u'apples')\n",
+      "(17, u'back')\n",
+      "(49, u'bake')\n",
+      "(61, u'baking')\n",
+      "(22, u'bananas')\n",
+      "(33, u'batter')\n",
+      "(40, u'beat')\n",
+      "(27, u'blueberries')\n",
+      "(82, u'bowl')\n",
+      "(27, u'brown')\n",
+      "(56, u'butter')\n",
+      "(20, u'center')\n",
+      "(28, u'cinnamon')\n",
+      "(36, u'combine')\n",
+      "(17, u'comes')\n",
+      "(37, u'cool')\n",
+      "(16, u'cover')\n",
+      "(33, u'cream')\n",
+      "(41, u'cup')\n",
+      "(18, u'cut')\n",
+      "(94, u'degrees')\n",
+      "(20, u'dish')\n",
+      "(20, u'egg')\n",
+      "(20, u'eggs')\n",
+      "(33, u'first')\n",
+      "(68, u'flour')\n",
+      "(24, u'grease')\n",
+      "(45, u'inch')\n",
+      "(36, u'large')\n",
+      "(24, u'make')\n",
+      "(32, u'medium')\n",
+      "(33, u'milk')\n",
+      "(74, u'minutes')\n",
+      "(51, u'mix')\n",
+      "(65, u'mixture')\n",
+      "(15, u'monday')\n",
+      "(23, u'new')\n",
+      "(35, u'one')\n",
+      "(89, u'oven')\n",
+      "(64, u'pan')\n",
+      "(29, u'place')\n",
+      "(36, u'pour')\n",
+      "(18, u'powder')\n",
+      "(43, u'preheat')\n",
+      "(41, u'preheated')\n",
+      "(20, u'prepared')\n",
+      "(26, u'remaining')\n",
+      "(21, u'said')\n",
+      "(26, u'salt')\n",
+      "(19, u'set')\n",
+      "(23, u'smooth')\n",
+      "(15, u'soda')\n",
+      "(22, u'spread')\n",
+      "(21, u'sprinkle')\n",
+      "(70, u'stir')\n",
+      "(90, u'sugar')\n",
+      "(21, u'time')\n",
+      "(51, u'together')\n",
+      "(37, u'top')\n",
+      "(19, u'two')\n",
+      "(40, u'vanilla')\n",
+      "(30, u'well')\n",
+      "(34, u'white')\n"
+     ]
+    }
+   ],
+   "source": [
+    "import numpy as np\n",
+    "\n",
+    "# Sum up the counts of each vocabulary word\n",
+    "dist = np.sum(train_data_features, axis=0)\n",
+    "\n",
+    "# For each, print the vocabulary word and the number of times it \n",
+    "# appears in the training set\n",
+    "for tag, count in zip(vocab, dist):\n",
+    "    print(count, tag)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Train the model and watch the cross validation score"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 242,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[ 0.68181818  0.77272727  0.84210526  0.89473684  0.84210526  0.73684211\n",
+      "  0.78947368  0.63157895]\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn.ensemble import RandomForestClassifier\n",
+    "from sklearn.model_selection import cross_val_score\n",
+    "import numpy as np\n",
+    "#split to train & test\n",
+    "# msk = np.random.rand(len(clean_train_reviews)) < 0.8\n",
+    "# train_x = train_data_features[msk]\n",
+    "# test_x = train_data_features[~msk]\n",
+    "# train_y = df.loc[msk,\"text\"]\n",
+    "# test_y = df.loc[~msk,\"text\"]\n",
+    "\n",
+    "# Initialize a Random Forest classifier with 100 trees\n",
+    "forest = RandomForestClassifier(n_estimators = 100) \n",
+    "\n",
+    "# Fit the forest to the training set, using the bag of words as \n",
+    "# features and the sentiment labels as the response variable\n",
+    "#\n",
+    "# This may take a few minutes to run\n",
+    "forest = forest.fit( train_x, train_y )\n",
+    "\n",
+    "# Evaluate accuracy best on the test set\n",
+    "forest.score(test_x,test_y)\n",
+    "# cross validation with RandomForestClassifier\n",
+    "cross_validation = cross_val_score(forest, train_data_features, df[\"text\"], cv=8)  \n",
+    "print(cross_validation)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## We can see that the result are not so good - lets improve them!!"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## First, lets try adding tf-id to our model as we learned at class"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 208,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "from sklearn.feature_extraction.text import TfidfVectorizer\n",
+    "tfidfvectorizer = TfidfVectorizer(analyzer = \"word\",tokenizer = None, ngram_range=(1,3), max_features = 150, stop_words = None,min_df=5, use_idf=True)\n",
+    "tfidf_matrix = tfidfvectorizer.fit_transform(clean_train_reviews)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 243,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[ 0.68181818  0.77272727  0.89473684  0.89473684  0.78947368  0.73684211\n",
+      "  0.84210526  0.68421053]\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn.ensemble import RandomForestClassifier\n",
+    "\n",
+    "#split to train & test\n",
+    "# msk = np.random.rand(len(clean_train_reviews)) < 0.8\n",
+    "# train_x = tfidf_matrix[msk]\n",
+    "# test_x = tfidf_matrix[~msk]\n",
+    "# train_y = df.loc[msk,\"text\"]\n",
+    "# test_y = df.loc[~msk,\"text\"]\n",
+    "\n",
+    "# Initialize a Random Forest classifier with 100 trees\n",
+    "forest = RandomForestClassifier(n_estimators = 100, random_state=1) \n",
+    "\n",
+    "# Fit the forest to the training set, using the bag of words as \n",
+    "# features and the sentiment labels as the response variable\n",
+    "#\n",
+    "# This may take a few minutes to run\n",
+    "forest = forest.fit( train_x, train_y )\n",
+    "\n",
+    "# Evaluate accuracy best on the test set\n",
+    "forest.score(test_x,test_y)\n",
+    "# cross validation with RandomForestClassifier\n",
+    "cross_validation2 = cross_val_score(forest, train_data_features, df[\"text\"], cv=8)  \n",
+    "print(cross_validation2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## The scores are still not so good\n",
+    "## lets minimize the min_df to 10"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 244,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "\n",
+    "# Initialize the \"CountVectorizer\" object, which is scikit-learn's\n",
+    "# bag of words tool.  \n",
+    "vectorizer = CountVectorizer(analyzer = \"word\",   \\\n",
+    "                             tokenizer = None,    \\\n",
+    "                             preprocessor = None, \\\n",
+    "                             stop_words = None,   \\\n",
+    "                             min_df = 10) \n",
+    "\n",
+    "# fit_transform() Convert a collection of text documents (reviews in our example) to a matrix of token counts.\n",
+    "# This implementation produces a sparse representation.\n",
+    "# The input to fit_transform should be a list of strings.\n",
+    "train_data_features = vectorizer.fit_transform(clean_train_reviews)\n",
+    "###train_data_features = vectorizer.fit_transform(train['review'])\n",
+    "\n",
+    "# Numpy arrays are easy to work with, so convert the result to an \n",
+    "# array\n",
+    "\n",
+    "train_data_features = train_data_features.toarray()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 246,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[ 0.86363636  0.81818182  0.84210526  0.84210526  0.89473684  0.84210526\n",
+      "  0.94736842  0.73684211]\n"
+     ]
+    }
+   ],
+   "source": [
+    "\n",
+    "# Initialize a Random Forest classifier with 100 trees\n",
+    "forest = RandomForestClassifier(n_estimators = 100, random_state=1) \n",
+    "\n",
+    "# Fit the forest to the training set, using the bag of words as \n",
+    "# features and the sentiment labels as the response variable\n",
+    "#\n",
+    "# This may take a few minutes to run\n",
+    "forest = forest.fit( train_x, train_y )\n",
+    "\n",
+    "# Evaluate accuracy best on the test set\n",
+    "forest.score(test_x,test_y)\n",
+    "# cross validation with RandomForestClassifier\n",
+    "cross_validation3 = cross_val_score(forest, train_data_features, df[\"text\"], cv=8)  \n",
+    "print(cross_validation3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 247,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.875"
+      ]
+     },
+     "execution_count": 247,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from sklearn.model_selection import train_test_split\n",
+    "x = train_data_features\n",
+    "y = df['text']\n",
+    "train_x, test_x, train_y, test_y = train_test_split(train_data_features, y, test_size=0.2, random_state=150)\n",
+    "forest = forest.fit(train_x, train_y)\n",
+    "forest.score(test_x, test_y)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 0.875  % - nice results\n",
+    "## Much better results - lets see it in graph and make our final model "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 250,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "image/png": "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\nV155BTCmF3Tp0oU33niDBQsW8Morr3Dt2jWmTZtGv3792LlzZ477J+W8wcHBVK9enalTp3L06FGW\nLFlC+fLlmTJliuUe9+/fn5YtWzJw4EAAatSoAcCgQYPYsGEDQ4YMwcfHh9jYWPbt28epU6do3Lhx\nhvdBPJxiE2MJWR/CN799w/QO03m91euFYy691lpe5hfQFNCRkZFaiPwQGRmpi+pnasWKFdpkMlld\nW2hoqDaZTHry5MlWdZs2baqbN2+e5TFv376drmzw4MHa1dVV371711LWpUsX7e3tne22VqtWTYeF\nhVneT5w4Ubu5uelz585Z1RszZowuXry4/uOPPzJs0/379/Vjjz2mO3ToYCmbM2eONplM+s8//8yw\nDUeOHNFKKb1y5cpstzu7+44dO1aPGTNGr127Vq9evVqHhYVppZT28/PTSUlJmR77+PHjWimlBw0a\nZFU+atQobTKZ9O7duy1loaGh2s3NLVttzuge7d69WyuldP369fX9+/ct5XPnztUmk0n/9NNPlrLa\ntWvrwMBAq/1v376tq1evrjt27Jjp+VPuyfr16y1lt27d0rVq1dImk0nv2bNHa631vXv3dPny5XWj\nRo30nTt3LHW3bt2qlVJ6woQJljJ/f39dsmRJq89HWqGhoTave8KECdpkMlmVKaW0k5OTvnjxoqVs\n8eLFWimlK1WqpBMSEizlY8eO1SaTSV+4cMFSlt3+mTBhglZK6QEDBljVDQoK0uXKlbMqc3V1tfq3\nksLd3V0PGTIkw+vOSFH+GShsi4yK1F6zvXSZaWX0znM7C+Yc5s8V0FTnIM6T6Q1CFCaJiXD0aMG+\nEhML/DLSjuj6+fnx66+/ZrlfiRIlLH+Pj48nNjaWJ598ksTERE6fPp1v7Vu3bh1+fn6ULFmS2NhY\nyysgIID79+9bpbNK3abr169z7do1/Pz8rLJWuLu7A7Bx40a7PKQ1efJk3n//fXr06EFwcDDLli1j\n8uTJ7N+/n3Xr1mW677Zt21BKMXz4cKvykSNHorVm69atBdLmfv36Wc0N9vPzQ2tt+ZwcO3aMs2fP\nEhISYnWPbt68SUBAQJYpx7Zv307FihUJCgqylDk6OlpGMFMcOXKEq1ev8s9//pNHHnnEUh4YGEjd\nunUt1x8TE8N3331H//79qVy5cp6vP0WHDh2oUqWK5X3Lli0B6NGjB87OzunKc9s/Simb/y5jY2OJ\n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\n3v8HN5HWvKGtxSgAAAAASUVORK5CYII=\n",
+      "text/plain": [
+       "<matplotlib.figure.Figure at 0x11b595e50>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "\n",
+    "rcParams['figure.figsize'] = 8, 6\n",
+    "t = np.arange(1, 9, 1)\n",
+    "plt.plot(t, sorted(cross_validation), 'r', label='In at least 15 of the documents')\n",
+    "plt.plot(t, sorted(cross_validation2), 'b', label='Using tfidf')\n",
+    "plt.plot(t, sorted(cross_validation3), 'g', label='In at least 10 of the documents')\n",
+    "plt.ylabel('score')\n",
+    "plt.xlabel('cross validation')\n",
+    "plt.title('Comparing our 3 modles')\n",
+    "plt.legend(loc='upper center')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## We can see clearly that the green graph is the best one"
+   ]
+  }
+ ],
+ "metadata": {
+  "anaconda-cloud": {},
+  "kernelspec": {
+   "display_name": "Python [conda root]",
+   "language": "python",
+   "name": "conda-root-py"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 2
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython2",
+   "version": "2.7.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 1
+}
